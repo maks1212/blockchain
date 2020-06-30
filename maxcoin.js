@@ -32,10 +32,36 @@ class Blockchain {
         newBlock.hash = newBlock.calculateHash();
         this.chain.push(newBlock);
     }
+
+    isChainValid() {
+        for (let i = 1; i < this.chain.length; i++) {
+            const currentBlock = this.chain[i];
+            const previousBlock = this.chain[i - 1];
+
+            if (currentBlock.hash !== currentBlock.calculateHash()) {
+                return false;
+            }
+
+            if (currentBlock.previousHash !== previousBlock.hash) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 let maxCoin = new Blockchain();
-maxCoin.addBlock(new Block(1, '30/06/2020',{amount: '4444'}));
-maxCoin.addBlock(new Block(2, '30/06/2020',{amount: '244'}));
+maxCoin.addBlock(new Block(1, '30/06/2020', {amount: '4444'}));
+maxCoin.addBlock(new Block(2, '30/06/2020', {amount: '244'}));
+maxCoin.addBlock(new Block(3, '30/06/2020', {amount: '244'}));
+
 
 console.log(JSON.stringify(maxCoin, null, 3))
+console.info('is Blockchain valid:', maxCoin.isChainValid());
+
+console.log();
+console.log('Hacking Blockchain...');
+maxCoin.chain[2].data = {amount: '3'};
+maxCoin.chain[1].hash = maxCoin.chain[1].calculateHash();
+console.info('is Blockchain valid:', maxCoin.isChainValid());
+
